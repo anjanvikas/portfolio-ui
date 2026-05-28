@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.r2.cloudflarestorage.com",
       },
+      // Stub host used by the seed data until R2 assets land.
+      {
+        protocol: "https",
+        hostname: "example.com",
+      },
     ],
   },
 };
