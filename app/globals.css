@@ -151,3 +151,62 @@
     @apply font-sans;
   }
 }
+
+/* highlight.js token theme for the blog code slab. The slab is always dark
+   (see CodeBlock / design-tokens.md §11), so these colors are fixed rather than
+   tied to the theme-swapping ink/paper vars. Brand-tinted: chartreuse keywords,
+   pink strings, muted comments. */
+.hljs {
+  color: #fafaf5;
+  background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+  color: #6b6b70;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-literal,
+.hljs-type {
+  color: #c6ff3d;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string {
+  color: #ff5c8a;
+}
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-template-variable,
+.hljs-variable {
+  color: #ffb38a;
+}
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #7fd4ff;
+  font-weight: 600;
+}
+.hljs-attr,
+.hljs-property,
+.hljs-params {
+  color: #e0dfd6;
+}
+.hljs-meta,
+.hljs-comment.hljs-doctag,
+.hljs-tag {
+  color: #8a8a90;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}

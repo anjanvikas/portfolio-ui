@@ -120,3 +120,107 @@ export async function fetchProject(slug: string): Promise<ProjectDetail | null> 
   }
   return (await res.json()) as ProjectDetail;
 }
+
+// ---------------------------------------------------------------------------
+// Blog (F07 / SCRUM-62 + SCRUM-74)
+// ---------------------------------------------------------------------------
+
+// Compact series descriptor embedded on a post card / detail. Null when the
+// post is standalone.
+export type SeriesRef = {
+  name: string;
+  slug: string;
+  order: number;
+};
+
+export type PostCard = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  // Empty until real asset hosting lands (SCRUM-16); the UI falls back to a
+  // colored cover slab when this is absent.
+  cover_url: string;
+  // ISO date (YYYY-MM-DD).
+  published_at: string;
+  reading_time_mins: number;
+  tags: string[];
+  series: SeriesRef | null;
+};
+
+// One sibling in the prev/next series navigation.
+export type SeriesNav = {
+  title: string;
+  slug: string;
+  series_order: number;
+};
+
+export type PostDetail = PostCard & {
+  body: string;
+  // Total published parts in the series (the "of Y"); 0 when standalone.
+  series_part_count: number;
+  prev: SeriesNav | null;
+  next: SeriesNav | null;
+};
+
+// One published post within a series, as returned by GET /api/v1/series/{slug}.
+export type SeriesPost = {
+  title: string;
+  slug: string;
+  series_order: number;
+  published_at: string;
+};
+
+export type SeriesDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  post_count: number;
+  posts: SeriesPost[];
+};
+
+// Same 60s ISR window as the projects pages (SCRUM-62 mirrors SCRUM-61).
+const BLOG_REVALIDATE = 60;
+
+// Fetches published post cards for the /blog index, newest first.
+export async function fetchPosts(limit = 50): Promise<PostCard[]> {
+  const res = await fetch(`${serverAPIBase()}/api/v1/posts?limit=${limit}`, {
+    next: { revalidate: BLOG_REVALIDATE },
+  });
+  if (!res.ok) {
+    throw new Error(`fetchPosts: HTTP ${res.status}`);
+  }
+  return (await res.json()) as PostCard[];
+}
+
+// Fetches a single post by slug. Returns null on 404 so the page can call
+// notFound() instead of throwing.
+export async function fetchPost(slug: string): Promise<PostDetail | null> {
+  const res = await fetch(
+    `${serverAPIBase()}/api/v1/posts/${encodeURIComponent(slug)}`,
+    { next: { revalidate: BLOG_REVALIDATE } },
+  );
+  if (res.status === 404) {
+    return null;
+  }
+  if (!res.ok) {
+    throw new Error(`fetchPost(${slug}): HTTP ${res.status}`);
+  }
+  return (await res.json()) as PostDetail;
+}
+
+// Fetches a series (meta + full ordered list of published posts) for the post
+// page's series TOC strip. Returns null on 404.
+export async function fetchSeries(slug: string): Promise<SeriesDetail | null> {
+  const res = await fetch(
+    `${serverAPIBase()}/api/v1/series/${encodeURIComponent(slug)}`,
+    { next: { revalidate: BLOG_REVALIDATE } },
+  );
+  if (res.status === 404) {
+    return null;
+  }
+  if (!res.ok) {
+    throw new Error(`fetchSeries(${slug}): HTTP ${res.status}`);
+  }
+  return (await res.json()) as SeriesDetail;
+}
