@@ -46,3 +46,26 @@ export async function fetchProfile(): Promise<Profile> {
   }
   return (await res.json()) as Profile;
 }
+
+export type ProjectCard = {
+  slug: string;
+  title: string;
+  summary: string;
+  // Empty until real asset hosting lands (SCRUM-16); the UI falls back to a
+  // colored cover slab when this is absent.
+  cover_url: string;
+  tags: string[];
+};
+
+// Fetches the featured projects strip for the homepage. SSG at build time via
+// force-cache, same as fetchProfile.
+export async function fetchFeaturedProjects(limit = 3): Promise<ProjectCard[]> {
+  const res = await fetch(
+    `${serverAPIBase()}/api/v1/projects?featured=true&limit=${limit}`,
+    { cache: "force-cache" },
+  );
+  if (!res.ok) {
+    throw new Error(`fetchFeaturedProjects: HTTP ${res.status}`);
+  }
+  return (await res.json()) as ProjectCard[];
+}
