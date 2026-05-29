@@ -69,3 +69,54 @@ export async function fetchFeaturedProjects(limit = 3): Promise<ProjectCard[]> {
   }
   return (await res.json()) as ProjectCard[];
 }
+
+// Full project detail, including the three markdown body sections. Returned by
+// GET /api/v1/projects/{slug}.
+export type ProjectDetail = {
+  slug: string;
+  title: string;
+  tagline: string;
+  summary: string;
+  body_overview: string;
+  body_why_built: string;
+  body_learning: string;
+  // Empty until real asset hosting lands (SCRUM-16).
+  cover_url: string;
+  repo_url: string;
+  live_url: string;
+  // ISO date (YYYY-MM-DD) or "" when unpublished.
+  published_at: string;
+  tags: string[];
+};
+
+// ISR revalidation window (seconds) for the projects list + detail pages.
+// SCRUM-61 AC: 60s. Pages also re-export this as `revalidate`.
+const PROJECTS_REVALIDATE = 60;
+
+// Fetches every published project card for the /projects index. ISR: the
+// snapshot is rebuilt at most once per PROJECTS_REVALIDATE seconds.
+export async function fetchProjects(limit = 24): Promise<ProjectCard[]> {
+  const res = await fetch(`${serverAPIBase()}/api/v1/projects?limit=${limit}`, {
+    next: { revalidate: PROJECTS_REVALIDATE },
+  });
+  if (!res.ok) {
+    throw new Error(`fetchProjects: HTTP ${res.status}`);
+  }
+  return (await res.json()) as ProjectCard[];
+}
+
+// Fetches a single project by slug. Returns null on 404 so the page can call
+// notFound() instead of throwing. ISR like fetchProjects.
+export async function fetchProject(slug: string): Promise<ProjectDetail | null> {
+  const res = await fetch(
+    `${serverAPIBase()}/api/v1/projects/${encodeURIComponent(slug)}`,
+    { next: { revalidate: PROJECTS_REVALIDATE } },
+  );
+  if (res.status === 404) {
+    return null;
+  }
+  if (!res.ok) {
+    throw new Error(`fetchProject(${slug}): HTTP ${res.status}`);
+  }
+  return (await res.json()) as ProjectDetail;
+}
