@@ -27,3 +27,31 @@ export async function adminApiGet(path: string): Promise<Response> {
     cache: "no-store",
   });
 }
+
+// adminApiSend forwards an authenticated mutating request (POST/PUT/DELETE) to
+// the Go API. `body`, when present, is JSON-encoded. Like adminApiGet it returns
+// 401 when the session cookie is missing, and otherwise passes the upstream
+// response straight through (status, body, and all) so the caller can react to
+// the 400/404/409 the API raises.
+export async function adminApiSend(
+  method: "POST" | "PUT" | "DELETE",
+  path: string,
+  body?: unknown,
+): Promise<Response> {
+  const token = (await cookies()).get(ADMIN_COOKIE)?.value;
+  if (!token) {
+    return Response.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  return fetch(`${apiBaseURL()}${path}`, {
+    method,
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+    cache: "no-store",
+  });
+}
