@@ -224,3 +224,55 @@ export async function fetchSeries(slug: string): Promise<SeriesDetail | null> {
   }
   return (await res.json()) as SeriesDetail;
 }
+
+// ---------------------------------------------------------------------------
+// About (F08 / SCRUM-63)
+// ---------------------------------------------------------------------------
+
+// One work-history entry on the /about timeline. `end_date` is null for a
+// current role — the UI renders "Present".
+export type Experience = {
+  id: string;
+  company: string;
+  role: string;
+  location: string;
+  // ISO date (YYYY-MM-DD).
+  start_date: string;
+  // ISO date or null (null = current role).
+  end_date: string | null;
+  // Markdown.
+  description: string;
+};
+
+export type Testimonial = {
+  id: string;
+  author_name: string;
+  author_role: string;
+  author_company: string;
+  quote: string;
+};
+
+// The /about page is fully static (SCRUM-63 AC). Both fetches snapshot at build
+// time via force-cache, same as the homepage profile fetch.
+
+// Fetches the work-history timeline, in display order (newest first).
+export async function fetchExperience(): Promise<Experience[]> {
+  const res = await fetch(`${serverAPIBase()}/api/v1/experience`, {
+    cache: "force-cache",
+  });
+  if (!res.ok) {
+    throw new Error(`fetchExperience: HTTP ${res.status}`);
+  }
+  return (await res.json()) as Experience[];
+}
+
+// Fetches the testimonials strip, in display order.
+export async function fetchTestimonials(): Promise<Testimonial[]> {
+  const res = await fetch(`${serverAPIBase()}/api/v1/testimonials`, {
+    cache: "force-cache",
+  });
+  if (!res.ok) {
+    throw new Error(`fetchTestimonials: HTTP ${res.status}`);
+  }
+  return (await res.json()) as Testimonial[];
+}
