@@ -276,3 +276,49 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
   }
   return (await res.json()) as Testimonial[];
 }
+
+// ---------------------------------------------------------------------------
+// Contact (F09 / SCRUM-64)
+// ---------------------------------------------------------------------------
+
+export type ContactInput = {
+  name: string;
+  email: string;
+  message: string;
+};
+
+// Result of a contact submission. fieldErrors mirrors the backend's per-field
+// `errors` map so the form can render them inline.
+export type ContactResult =
+  | { ok: true }
+  | { ok: false; fieldErrors?: Record<string, string>; error?: string };
+
+// Posts the contact form straight to the Go API from the browser (no cookies,
+// so no same-origin proxy needed — CORS allows the marketing origin).
+export async function submitContact(input: ContactInput): Promise<ContactResult> {
+  let res: Response;
+  try {
+    res = await fetch(`${browserAPIBase()}/api/v1/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+  } catch {
+    return { ok: false, error: "Network error. Please try again." };
+  }
+
+  if (res.ok) {
+    return { ok: true };
+  }
+  if (res.status === 400) {
+    const body = (await res.json().catch(() => ({}))) as {
+      errors?: Record<string, string>;
+      error?: string;
+    };
+    return { ok: false, fieldErrors: body.errors, error: body.error };
+  }
+  return {
+    ok: false,
+    error: "Could not send your message. Please try again later.",
+  };
+}

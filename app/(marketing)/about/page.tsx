@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { ArrowDown } from "lucide-react";
 
 import { ExperienceTimeline } from "@/components/site/experience-timeline";
 import { MarkdownSection } from "@/components/site/markdown-section";
 import { TestimonialsStrip } from "@/components/site/testimonials-strip";
 import {
+  browserAPIBase,
   fetchExperience,
   fetchProfile,
   fetchTestimonials,
@@ -44,6 +46,13 @@ export default async function AboutPage() {
               {profile.headline}
             </p>
             <MarkdownSection body={profile.bio} />
+            <a
+              href={`${browserAPIBase()}/api/v1/profile/resume`}
+              className="mt-6 inline-flex items-center justify-center gap-2 border-2 border-ink bg-accent px-7 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press"
+            >
+              Download CV
+              <ArrowDown strokeWidth={2.5} className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </section>
