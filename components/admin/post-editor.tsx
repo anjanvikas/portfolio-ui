@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Bold, Code, Heading, Italic, Quote, X } from "lucide-react";
+import { Bold, Code, FileUp, Heading, Image as ImageIcon, Italic, Quote, X } from "lucide-react";
 
+import { ImagePicker } from "@/components/admin/image-picker";
 import { PostBody } from "@/components/site/post-body";
+import { convertDocx } from "@/lib/admin-assets";
 import {
   ApiError,
   UNAUTHORIZED,
@@ -176,6 +178,58 @@ export function PostEditor({ initial }: { initial?: AdminPost }) {
       el.selectionStart = el.selectionEnd = s + prefix.length;
     });
   }
+  function insertAtCursor(text: string) {
+    const el = bodyRef.current;
+    if (!el) {
+      // No focus yet (e.g. picking a cover) — append to the end.
+      setBody((b) => (b ? `${b}\n${text}` : text));
+      setSavedNote(null);
+      return;
+    }
+    const { selectionStart: s, selectionEnd: e, value } = el;
+    const next = value.slice(0, s) + text + value.slice(e);
+    setBody(next);
+    setSavedNote(null);
+    requestAnimationFrame(() => {
+      el.focus();
+      el.selectionStart = el.selectionEnd = s + text.length;
+    });
+  }
+
+  // ---- image picker + docx import ----------------------------------------
+  // picker mode decides what a chosen asset URL does: insert into the body or
+  // become the cover image.
+  const [picker, setPicker] = useState<null | "body" | "cover">(null);
+  const [importing, setImporting] = useState(false);
+  const docxRef = useRef<HTMLInputElement>(null);
+
+  function onPickAsset(url: string) {
+    if (picker === "cover") {
+      setCoverUrl(url);
+      setSavedNote(null);
+    } else {
+      insertAtCursor(`![](${url})`);
+    }
+    setPicker(null);
+  }
+
+  async function onImportDocx(file: File | undefined) {
+    if (!file) return;
+    setImporting(true);
+    setError(null);
+    try {
+      const markdown = await convertDocx(file);
+      insertAtCursor(body.trim() ? `\n\n${markdown}` : markdown);
+    } catch (err) {
+      if (err instanceof ApiError && err.message === UNAUTHORIZED) {
+        router.replace("/admin/login");
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Conversion failed");
+    } finally {
+      setImporting(false);
+    }
+  }
 
   const dirty = savedNote === null;
 
@@ -335,15 +389,24 @@ export function PostEditor({ initial }: { initial?: AdminPost }) {
           </Field>
 
           <Field label="Cover image URL">
-            <input
-              value={coverUrl}
-              onChange={(e) => {
-                setCoverUrl(e.target.value);
-                setSavedNote(null);
-              }}
-              placeholder="https://…"
-              className="w-full border-2 border-ink bg-paper-2 px-3 py-2 font-mono text-sm outline-none focus:border-accent"
-            />
+            <div className="flex gap-2">
+              <input
+                value={coverUrl}
+                onChange={(e) => {
+                  setCoverUrl(e.target.value);
+                  setSavedNote(null);
+                }}
+                placeholder="https://…"
+                className="w-full border-2 border-ink bg-paper-2 px-3 py-2 font-mono text-sm outline-none focus:border-accent"
+              />
+              <button
+                type="button"
+                onClick={() => setPicker("cover")}
+                className="shrink-0 border-2 border-ink bg-paper px-3 font-display text-xs font-bold uppercase hover:bg-accent"
+              >
+                Pick
+              </button>
+            </div>
           </Field>
 
           <Field label="Excerpt">
@@ -381,6 +444,28 @@ export function PostEditor({ initial }: { initial?: AdminPost }) {
             <ToolbarBtn label="Quote" onClick={() => prefixLine("> ")}>
               <Quote className="h-4 w-4" />
             </ToolbarBtn>
+            <ToolbarBtn label="Insert image" onClick={() => setPicker("body")}>
+              <ImageIcon className="h-4 w-4" />
+            </ToolbarBtn>
+            <div className="ml-auto">
+              <ToolbarBtn
+                label={importing ? "Converting…" : "Import .docx"}
+                onClick={() => docxRef.current?.click()}
+                disabled={importing}
+              >
+                <FileUp className="h-4 w-4" />
+              </ToolbarBtn>
+            </div>
+            <input
+              ref={docxRef}
+              type="file"
+              accept=".docx"
+              className="hidden"
+              onChange={(e) => {
+                onImportDocx(e.target.files?.[0]);
+                e.target.value = "";
+              }}
+            />
           </div>
           <textarea
             ref={bodyRef}
@@ -407,6 +492,8 @@ export function PostEditor({ initial }: { initial?: AdminPost }) {
           )}
         </section>
       </div>
+
+      <ImagePicker open={picker !== null} onClose={() => setPicker(null)} onSelect={onPickAsset} />
     </div>
   );
 }
@@ -427,10 +514,12 @@ function ToolbarBtn({
   label,
   onClick,
   children,
+  disabled = false,
 }: {
   label: string;
   onClick: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
 }) {
   return (
     <button
@@ -438,7 +527,8 @@ function ToolbarBtn({
       title={label}
       aria-label={label}
       onClick={onClick}
-      className="flex h-8 w-8 items-center justify-center border-2 border-paper/30 bg-ink text-paper hover:border-accent hover:text-accent"
+      disabled={disabled}
+      className="flex h-8 w-8 items-center justify-center border-2 border-paper/30 bg-ink text-paper hover:border-accent hover:text-accent disabled:opacity-40"
     >
       {children}
     </button>

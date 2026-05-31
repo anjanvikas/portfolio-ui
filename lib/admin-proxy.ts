@@ -55,3 +55,21 @@ export async function adminApiSend(
     cache: "no-store",
   });
 }
+
+// adminApiSendForm forwards an authenticated multipart POST (a FormData body) to
+// the Go API — used by the docx→markdown converter, the one admin endpoint that
+// takes a file upload rather than JSON. fetch sets the multipart Content-Type
+// (with boundary) itself, so we only attach the Authorization header.
+export async function adminApiSendForm(path: string, form: FormData): Promise<Response> {
+  const token = (await cookies()).get(ADMIN_COOKIE)?.value;
+  if (!token) {
+    return Response.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  return fetch(`${apiBaseURL()}${path}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+    cache: "no-store",
+  });
+}
