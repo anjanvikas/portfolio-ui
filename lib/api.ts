@@ -156,6 +156,9 @@ export type SeriesNav = {
 
 export type PostDetail = PostCard & {
   body: string;
+  // 1200x630 OG card uploaded at publish time. Empty until generated; the
+  // frontend falls back to the homepage OG image when blank.
+  og_image_url: string;
   // Total published parts in the series (the "of Y"); 0 when standalone.
   series_part_count: number;
   prev: SeriesNav | null;

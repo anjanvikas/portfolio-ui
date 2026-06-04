@@ -24,9 +24,33 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const post = await fetchPost(slug);
   if (!post) return { title: "Post not found" };
+
+  const title = `${post.title} — Anjan Vikas Reddy`;
+  // Per-post OG image is generated at publish (SCRUM-69). Fall back to the
+  // site-wide homepage card when a post's image isn't ready (e.g. generation
+  // failed at publish and the lazy /og-image regen hasn't been hit yet).
+  const ogImage =
+    post.og_image_url ||
+    process.env.NEXT_PUBLIC_HOMEPAGE_OG_URL ||
+    "/og-home.png";
+
   return {
-    title: `${post.title} — Anjan Vikas Reddy`,
+    title,
     description: post.excerpt,
+    openGraph: {
+      type: "article",
+      title,
+      description: post.excerpt,
+      url: `/blog/${post.slug}`,
+      publishedTime: post.published_at,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: post.excerpt,
+      images: [ogImage],
+    },
   };
 }
 
