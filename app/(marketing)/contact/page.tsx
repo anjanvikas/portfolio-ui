@@ -10,8 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  // force-cached profile fetch → this page snapshots at build time, with the
-  // form hydrating as a client island.
+  // ISR profile fetch (60s) → form hydrates as a client island.
   const profile = await fetchProfile();
 
   return (

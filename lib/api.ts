@@ -35,11 +35,13 @@ export type Profile = {
   social_links: SocialLink[];
 };
 
+// Shared ISR window (seconds) for every CMS-editable fetch. Admin edits land
+// within this many seconds without a rebuild. Pages also re-export 60 directly.
+const REVALIDATE_SECONDS = 60;
+
 export async function fetchProfile(): Promise<Profile> {
   const res = await fetch(`${serverAPIBase()}/api/v1/profile`, {
-    // SSG opt-in: snapshot at build time, served from the framework cache
-    // afterwards. Revalidate by triggering a new build/deploy.
-    cache: "force-cache",
+    next: { revalidate: REVALIDATE_SECONDS },
   });
   if (!res.ok) {
     throw new Error(`fetchProfile: HTTP ${res.status}`);
@@ -57,12 +59,12 @@ export type ProjectCard = {
   tags: string[];
 };
 
-// Fetches the featured projects strip for the homepage. SSG at build time via
-// force-cache, same as fetchProfile.
+// Fetches the featured projects strip for the homepage. ISR (60s) so admin
+// edits land without a redeploy — same window as fetchProjects.
 export async function fetchFeaturedProjects(limit = 3): Promise<ProjectCard[]> {
   const res = await fetch(
     `${serverAPIBase()}/api/v1/projects?featured=true&limit=${limit}`,
-    { cache: "force-cache" },
+    { next: { revalidate: REVALIDATE_SECONDS } },
   );
   if (!res.ok) {
     throw new Error(`fetchFeaturedProjects: HTTP ${res.status}`);
@@ -89,15 +91,11 @@ export type ProjectDetail = {
   tags: string[];
 };
 
-// ISR revalidation window (seconds) for the projects list + detail pages.
-// SCRUM-61 AC: 60s. Pages also re-export this as `revalidate`.
-const PROJECTS_REVALIDATE = 60;
-
 // Fetches every published project card for the /projects index. ISR: the
-// snapshot is rebuilt at most once per PROJECTS_REVALIDATE seconds.
+// snapshot is rebuilt at most once per REVALIDATE_SECONDS seconds.
 export async function fetchProjects(limit = 24): Promise<ProjectCard[]> {
   const res = await fetch(`${serverAPIBase()}/api/v1/projects?limit=${limit}`, {
-    next: { revalidate: PROJECTS_REVALIDATE },
+    next: { revalidate: REVALIDATE_SECONDS },
   });
   if (!res.ok) {
     throw new Error(`fetchProjects: HTTP ${res.status}`);
@@ -110,7 +108,7 @@ export async function fetchProjects(limit = 24): Promise<ProjectCard[]> {
 export async function fetchProject(slug: string): Promise<ProjectDetail | null> {
   const res = await fetch(
     `${serverAPIBase()}/api/v1/projects/${encodeURIComponent(slug)}`,
-    { next: { revalidate: PROJECTS_REVALIDATE } },
+    { next: { revalidate: REVALIDATE_SECONDS } },
   );
   if (res.status === 404) {
     return null;
@@ -182,13 +180,10 @@ export type SeriesDetail = {
   posts: SeriesPost[];
 };
 
-// Same 60s ISR window as the projects pages (SCRUM-62 mirrors SCRUM-61).
-const BLOG_REVALIDATE = 60;
-
 // Fetches published post cards for the /blog index, newest first.
 export async function fetchPosts(limit = 50): Promise<PostCard[]> {
   const res = await fetch(`${serverAPIBase()}/api/v1/posts?limit=${limit}`, {
-    next: { revalidate: BLOG_REVALIDATE },
+    next: { revalidate: REVALIDATE_SECONDS },
   });
   if (!res.ok) {
     throw new Error(`fetchPosts: HTTP ${res.status}`);
@@ -201,7 +196,7 @@ export async function fetchPosts(limit = 50): Promise<PostCard[]> {
 export async function fetchPost(slug: string): Promise<PostDetail | null> {
   const res = await fetch(
     `${serverAPIBase()}/api/v1/posts/${encodeURIComponent(slug)}`,
-    { next: { revalidate: BLOG_REVALIDATE } },
+    { next: { revalidate: REVALIDATE_SECONDS } },
   );
   if (res.status === 404) {
     return null;
@@ -217,7 +212,7 @@ export async function fetchPost(slug: string): Promise<PostDetail | null> {
 export async function fetchSeries(slug: string): Promise<SeriesDetail | null> {
   const res = await fetch(
     `${serverAPIBase()}/api/v1/series/${encodeURIComponent(slug)}`,
-    { next: { revalidate: BLOG_REVALIDATE } },
+    { next: { revalidate: REVALIDATE_SECONDS } },
   );
   if (res.status === 404) {
     return null;
@@ -255,13 +250,13 @@ export type Testimonial = {
   quote: string;
 };
 
-// The /about page is fully static (SCRUM-63 AC). Both fetches snapshot at build
-// time via force-cache, same as the homepage profile fetch.
+// Both about-page feeds are CMS-editable, so ISR (60s) — admin edits land
+// within one revalidate window without a rebuild.
 
 // Fetches the work-history timeline, in display order (newest first).
 export async function fetchExperience(): Promise<Experience[]> {
   const res = await fetch(`${serverAPIBase()}/api/v1/experience`, {
-    cache: "force-cache",
+    next: { revalidate: REVALIDATE_SECONDS },
   });
   if (!res.ok) {
     throw new Error(`fetchExperience: HTTP ${res.status}`);
@@ -272,7 +267,7 @@ export async function fetchExperience(): Promise<Experience[]> {
 // Fetches the testimonials strip, in display order.
 export async function fetchTestimonials(): Promise<Testimonial[]> {
   const res = await fetch(`${serverAPIBase()}/api/v1/testimonials`, {
-    cache: "force-cache",
+    next: { revalidate: REVALIDATE_SECONDS },
   });
   if (!res.ok) {
     throw new Error(`fetchTestimonials: HTTP ${res.status}`);

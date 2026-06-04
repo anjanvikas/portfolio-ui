@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  // All three feeds are force-cached, so this page snapshots at build time
-  // (SCRUM-63 AC: statically generated).
+  // All three feeds are ISR (60s); admin edits land within one revalidate
+  // window without a rebuild.
   const [profile, experience, testimonials] = await Promise.all([
     fetchProfile(),
     fetchExperience(),
