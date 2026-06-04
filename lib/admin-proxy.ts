@@ -34,7 +34,7 @@ export async function adminApiGet(path: string): Promise<Response> {
 // response straight through (status, body, and all) so the caller can react to
 // the 400/404/409 the API raises.
 export async function adminApiSend(
-  method: "POST" | "PUT" | "DELETE",
+  method: "POST" | "PUT" | "PATCH" | "DELETE",
   path: string,
   body?: unknown,
 ): Promise<Response> {
