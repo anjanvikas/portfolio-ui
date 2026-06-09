@@ -203,12 +203,14 @@ export function PostEditor({ initial }: { initial?: AdminPost }) {
   const [importing, setImporting] = useState(false);
   const docxRef = useRef<HTMLInputElement>(null);
 
-  function onPickAsset(url: string) {
+  function onPickAsset(url: string, alt: string) {
     if (picker === "cover") {
       setCoverUrl(url);
       setSavedNote(null);
     } else {
-      insertAtCursor(`![](${url})`);
+      // SCRUM-83 — alt comes from the picker's alt-prompt step; an empty
+      // string is a valid decorative-image choice.
+      insertAtCursor(`![${alt}](${url})`);
     }
     setPicker(null);
   }
@@ -493,7 +495,12 @@ export function PostEditor({ initial }: { initial?: AdminPost }) {
         </section>
       </div>
 
-      <ImagePicker open={picker !== null} onClose={() => setPicker(null)} onSelect={onPickAsset} />
+      <ImagePicker
+        open={picker !== null}
+        onClose={() => setPicker(null)}
+        onSelect={onPickAsset}
+        withAltPrompt={picker === "body"}
+      />
     </div>
   );
 }

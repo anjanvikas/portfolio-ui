@@ -175,23 +175,26 @@ export default function AdminProfilePage() {
         </div>
 
         <Field label="Avatar URL" error={fieldErrors.avatar_url}>
-          <div className="flex gap-2">
-            <input
-              value={avatarUrl}
-              onChange={(e) => {
-                setAvatarUrl(e.target.value);
-                touch();
-              }}
-              placeholder="https://…"
-              className={fieldCls(fieldErrors.avatar_url)}
-            />
-            <button
-              type="button"
-              onClick={() => setPickingAvatar(true)}
-              className="shrink-0 border-2 border-ink bg-paper px-3 font-display text-xs font-bold uppercase hover:bg-accent"
-            >
-              Pick
-            </button>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <div className="flex flex-1 gap-2">
+              <input
+                value={avatarUrl}
+                onChange={(e) => {
+                  setAvatarUrl(e.target.value);
+                  touch();
+                }}
+                placeholder="https://…"
+                className={fieldCls(fieldErrors.avatar_url)}
+              />
+              <button
+                type="button"
+                onClick={() => setPickingAvatar(true)}
+                className="shrink-0 border-2 border-ink bg-paper px-3 font-display text-xs font-bold uppercase hover:bg-accent"
+              >
+                Pick
+              </button>
+            </div>
+            <AvatarPreview src={avatarUrl} name={name} />
           </div>
         </Field>
 
@@ -238,6 +241,62 @@ export default function AdminProfilePage() {
         }}
       />
     </div>
+  );
+}
+
+// SCRUM-82 — Live preview of how the avatar will render in the Hero / About.
+// Mirrors components/site/hero.tsx Avatar exactly: 3px ink ring, offset brut
+// shadow, and the same "[avatar]" slug fallback when the URL is empty or
+// fails to load. The avatar img remounts when `src` changes (keyed below) so
+// its own error state resets without needing a side-effect.
+function AvatarPreview({ src, name }: { src: string; name: string }) {
+  const trimmed = src.trim();
+  const isStubUrl = !trimmed || trimmed.includes("example.com");
+
+  return (
+    <div className="flex items-start gap-4">
+      <div className="relative h-28 w-28 shrink-0">
+        <div className="absolute inset-0 translate-x-[5px] translate-y-[5px] rounded-full bg-ink" />
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border-[3px] border-ink bg-paper-2">
+          {isStubUrl ? (
+            <AvatarFallback />
+          ) : (
+            <AvatarImage key={trimmed} src={trimmed} alt={name || "avatar preview"} />
+          )}
+        </div>
+      </div>
+      <div className="mt-1 flex flex-col">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-muted-brut">
+          Live preview
+        </p>
+        <p className="mt-1 max-w-[18ch] font-body text-xs leading-snug text-muted-brut">
+          Matches the Hero / About circle. Empty or broken URLs render the{" "}
+          <code className="font-mono">[avatar]</code> fallback.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function AvatarFallback() {
+  return (
+    <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-muted-brut">
+      [avatar]
+    </span>
+  );
+}
+
+function AvatarImage({ src, alt }: { src: string; alt: string }) {
+  const [errored, setErrored] = useState(false);
+  if (errored) return <AvatarFallback />;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      onError={() => setErrored(true)}
+      className="h-full w-full object-cover"
+    />
   );
 }
 

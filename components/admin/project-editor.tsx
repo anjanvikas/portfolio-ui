@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useRef, useState } from "react";
+import { Image as ImageIcon, X } from "lucide-react";
 
 import { ImagePicker } from "@/components/admin/image-picker";
 import {
@@ -375,6 +375,8 @@ export function ProjectEditor({ initial }: { initial?: AdminProject }) {
           setPickingCover(false);
         }}
       />
+      {/* Per-body image picker is mounted by BodySection itself so each section
+          stays self-contained. */}
     </div>
   );
 }
@@ -388,19 +390,61 @@ function BodySection({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  // SCRUM-83 — insert ![alt](url) at the cursor (or append) when an image is
+  // picked. Mirrors the post editor's insertAtCursor so a project body gets
+  // the same authoring affordance as a blog post.
+  function insertAtCursor(text: string) {
+    const el = textareaRef.current;
+    if (!el) {
+      onChange(value ? `${value}\n${text}` : text);
+      return;
+    }
+    const { selectionStart: s, selectionEnd: e, value: v } = el;
+    const next = v.slice(0, s) + text + v.slice(e);
+    onChange(next);
+    requestAnimationFrame(() => {
+      el.focus();
+      el.selectionStart = el.selectionEnd = s + text.length;
+    });
+  }
+
   return (
     <div className="bg-paper p-5 md:p-6">
-      <p className="mb-2 font-display text-xs font-bold uppercase tracking-wider">
-        <span className="text-accent-2">— </span>
-        {label} <span className="text-muted-brut">(markdown)</span>
-      </p>
+      <div className="mb-2 flex items-baseline justify-between gap-2">
+        <p className="font-display text-xs font-bold uppercase tracking-wider">
+          <span className="text-accent-2">— </span>
+          {label} <span className="text-muted-brut">(markdown)</span>
+        </p>
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          className="inline-flex items-center gap-1.5 border-2 border-ink bg-paper-2 px-2 py-1 font-display text-[11px] font-bold uppercase tracking-wide hover:bg-accent"
+        >
+          <ImageIcon className="h-3.5 w-3.5" strokeWidth={2.5} />
+          Insert image
+        </button>
+      </div>
       <textarea
+        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={10}
         placeholder={`## ${label}\n\nWrite in markdown…`}
         spellCheck
         className="w-full resize-y border-2 border-ink bg-paper-2 px-3 py-2 font-mono text-sm leading-relaxed outline-none focus:border-accent"
+      />
+
+      <ImagePicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(url, alt) => {
+          insertAtCursor(`![${alt}](${url})`);
+          setPickerOpen(false);
+        }}
+        withAltPrompt
       />
     </div>
   );
