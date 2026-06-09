@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { ArrowDown } from "lucide-react";
 
 import { ExperienceTimeline } from "@/components/site/experience-timeline";
@@ -10,8 +9,8 @@ import {
   fetchExperience,
   fetchProfile,
   fetchTestimonials,
-  type Profile,
 } from "@/lib/api";
+import { ProfilePhoto } from "@/components/site/profile-photo";
 
 export const metadata: Metadata = {
   title: "About — Anjan Vikas Reddy",
@@ -48,6 +47,8 @@ export default async function AboutPage() {
             <MarkdownSection body={profile.bio} />
             <a
               href={`${browserAPIBase()}/api/v1/profile/resume`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="mt-6 inline-flex items-center justify-center gap-2 border-2 border-ink bg-accent px-7 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press"
             >
               Download CV
@@ -104,30 +105,3 @@ function SectionHeading({
   );
 }
 
-// Square brutalist photo frame — 3px ink border + hard offset shadow, mirroring
-// the Hero avatar treatment. Falls back to an [AVATAR] slug while the seed ships
-// a placeholder URL (real assets land with R2 in SCRUM-16).
-function ProfilePhoto({ src, name }: { src: Profile["avatar_url"]; name: string }) {
-  const hasImage = Boolean(src) && !src.includes("example.com");
-  return (
-    <div className="relative h-56 w-56 shrink-0 md:h-64 md:w-64">
-      <div className="absolute inset-0 translate-x-[8px] translate-y-[8px] bg-accent" />
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden border-[3px] border-ink bg-paper-2">
-        {hasImage ? (
-          <Image
-            src={src}
-            alt={name}
-            fill
-            sizes="(min-width: 768px) 256px, 224px"
-            className="object-cover"
-            priority
-          />
-        ) : (
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-muted-brut">
-            [photo]
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}

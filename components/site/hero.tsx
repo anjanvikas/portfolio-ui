@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown } from "lucide-react";
 
 import { browserAPIBase, type Profile, type SocialLink } from "@/lib/api";
+import { HeroAvatar } from "@/components/site/hero-avatar";
 
 const HERO_SOCIAL_KEYS = ["github", "linkedin"] as const;
 
@@ -20,7 +20,7 @@ export function Hero({ profile }: { profile: Profile }) {
     <section className="bg-paper">
       <div className="mx-auto max-w-6xl px-5 pt-10 pb-12 md:px-6 md:pt-20 md:pb-24">
         <div className="flex flex-col items-center gap-10 md:flex-row md:items-start md:gap-14">
-          <Avatar src={profile.avatar_url} name={profile.name} />
+          <HeroAvatar src={profile.avatar_url} name={profile.name} />
 
           <div className="flex w-full flex-col items-start md:flex-1">
             <p className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-accent-2">
@@ -38,6 +38,8 @@ export function Hero({ profile }: { profile: Profile }) {
             <div className="mt-8 flex w-full flex-col gap-3 md:mt-10 md:w-auto md:flex-row md:items-center md:gap-4">
               <a
                 href={cvHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 border-2 border-ink bg-accent px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press md:px-7"
               >
                 Download CV
@@ -49,34 +51,6 @@ export function Hero({ profile }: { profile: Profile }) {
         </div>
       </div>
     </section>
-  );
-}
-
-function Avatar({ src, name }: { src: string; name: string }) {
-  // The seed ships a placeholder URL until real assets land in R2 (SCRUM-16).
-  // Detect that case and render the [AVATAR] slug so we don't fire a 404 at
-  // next/image.
-  const hasImage = Boolean(src) && !src.includes("example.com");
-  return (
-    <div className="relative h-40 w-40 shrink-0 md:h-60 md:w-60">
-      <div className="absolute inset-0 translate-x-[6px] translate-y-[6px] rounded-full bg-ink" />
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border-[3px] border-ink bg-paper-2">
-        {hasImage ? (
-          <Image
-            src={src}
-            alt={name}
-            fill
-            sizes="(min-width: 768px) 240px, 160px"
-            className="object-cover"
-            priority
-          />
-        ) : (
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-muted-brut">
-            [avatar]
-          </span>
-        )}
-      </div>
-    </div>
   );
 }
 
