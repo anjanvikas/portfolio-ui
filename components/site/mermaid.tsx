@@ -47,7 +47,7 @@ export function Mermaid({ chart }: { chart: string }) {
   return (
     <div className="my-8">
       <div className="relative border-2 border-ink bg-paper-2 p-4 md:p-6">
-        <span className="absolute left-0 top-0 bg-accent-2 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-ink">
+        <span className="absolute left-0 top-0 bg-accent-2 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-ink-fixed">
           ▮ Mermaid
         </span>
         <div

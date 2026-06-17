@@ -46,7 +46,7 @@ export function MobileNav() {
         aria-expanded={open}
         aria-controls="mobile-nav-drawer"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-11 w-11 items-center justify-center border-2 border-ink bg-paper text-ink transition-colors duration-100 hover:bg-accent active:bg-accent md:hidden"
+        className="inline-flex h-11 w-11 items-center justify-center border-2 border-ink bg-paper text-ink transition-colors duration-100 hover:bg-accent hover:text-ink-fixed active:bg-accent active:text-ink-fixed md:hidden"
       >
         {open ? (
           <X strokeWidth={2.5} className="h-6 w-6" />
@@ -75,8 +75,8 @@ export function MobileNav() {
                 className={cn(
                   "block border-2 border-ink px-5 py-4 font-display text-base font-bold uppercase tracking-wide shadow-brut transition-[transform,box-shadow] duration-100 active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press",
                   active
-                    ? "bg-accent text-ink"
-                    : "bg-paper text-ink hover:bg-accent",
+                    ? "bg-accent text-ink-fixed"
+                    : "bg-paper text-ink hover:bg-accent hover:text-ink-fixed",
                 )}
               >
                 {link.label}

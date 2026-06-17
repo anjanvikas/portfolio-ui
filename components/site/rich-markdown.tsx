@@ -48,11 +48,25 @@ export const richMarkdownComponents: Components = {
       {children}
     </h3>
   ),
-  p: ({ children }) => (
-    <p className="mt-5 font-body text-base leading-[1.75] text-ink md:text-lg">
-      {children}
-    </p>
-  ),
+  p: ({ node, children }) => {
+    // react-markdown wraps a markdown image in <p>, but our img override emits
+    // a block <figure>/<figcaption> — invalid inside <p>, which throws hydration
+    // errors on every project/blog page. When the paragraph contains an image
+    // (alone or mixed with trailing text), render a <div> with the identical
+    // className instead: <figure> is legal inside <div>, and a <div> and <p>
+    // with the same classes render identically, so the visual output is
+    // unchanged. We read the HAST node — the React children's .type is the img
+    // override fn, never the string "img".
+    const hasImage = ((node as HastNode)?.children ?? []).some(
+      (c) => c.type === "element" && c.tagName === "img"
+    );
+    const Tag = hasImage ? "div" : "p";
+    return (
+      <Tag className="mt-5 font-body text-base leading-[1.75] text-ink md:text-lg">
+        {children}
+      </Tag>
+    );
+  },
   ul: ({ children }) => (
     <ul className="mt-5 list-disc space-y-2 pl-6 font-body text-base leading-[1.75] text-ink marker:text-accent-2 md:text-lg">
       {children}

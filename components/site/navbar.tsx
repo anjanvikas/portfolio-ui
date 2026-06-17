@@ -1,12 +1,11 @@
-import { Moon } from "lucide-react";
-
 import { DesktopNav } from "./desktop-nav";
 import { Logo } from "./logo";
 import { MobileNav } from "./mobile-nav";
+import { ThemeToggle } from "./theme-toggle";
 
 // Sticky site-wide navbar slab. Desktop = inline link row; mobile = hamburger
-// that opens a slide-down drawer. Theme toggle is a non-functional placeholder
-// for now (dark-mode swap is not in SCRUM-59 scope).
+// that opens a slide-down drawer. The theme toggle lives in the header rail so
+// it's reachable on both desktop and mobile (SCRUM-88).
 export function Navbar() {
   return (
     <header className="sticky top-0 z-30 border-b-2 border-ink bg-paper">
@@ -14,14 +13,7 @@ export function Navbar() {
         <Logo />
         <DesktopNav />
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Toggle theme (coming soon)"
-            disabled
-            className="hidden h-10 w-10 items-center justify-center border-2 border-ink bg-paper text-ink shadow-brut transition-[transform,box-shadow] duration-100 disabled:cursor-not-allowed disabled:opacity-60 md:inline-flex"
-          >
-            <Moon strokeWidth={2.5} className="h-5 w-5" />
-          </button>
+          <ThemeToggle />
           <MobileNav />
         </div>
       </div>

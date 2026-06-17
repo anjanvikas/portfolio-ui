@@ -7,7 +7,7 @@ export function Logo() {
     <Link
       href="/"
       aria-label="Anjan Vikas Reddy — home"
-      className="inline-flex h-10 w-12 items-center justify-center border-2 border-ink bg-accent font-display text-sm font-bold tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press"
+      className="inline-flex h-10 w-12 items-center justify-center border-2 border-ink-fixed bg-accent font-display text-sm font-bold tracking-wider text-ink-fixed shadow-brut-fixed transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-fixed-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-fixed-press"
     >
       AVK
     </Link>

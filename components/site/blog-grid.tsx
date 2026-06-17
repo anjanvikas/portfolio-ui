@@ -47,7 +47,7 @@ export function BlogGrid({ posts }: { posts: PostCard[] }) {
                   onClick={() => setActiveTag(label)}
                   className={`border-2 border-ink px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider transition-[transform,box-shadow,background-color] duration-100 ${
                     active
-                      ? "bg-accent text-ink shadow-brut"
+                      ? "bg-accent text-ink-fixed shadow-brut"
                       : "bg-paper text-ink hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut"
                   }`}
                 >

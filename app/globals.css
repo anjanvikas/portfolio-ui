@@ -57,6 +57,19 @@
   --shadow-brut-lg: 6px 6px 0 0 var(--ink);
   --shadow-brut-hover: 8px 8px 0 0 var(--ink);
   --shadow-brut-press: 2px 2px 0 0 var(--ink);
+
+  /* Fixed brand anchors — these do NOT theme-flip. Used by the deliberate
+     contrast bands and on the chartreuse accent, where the surface is a fixed
+     island and must keep dark text/light chips in both modes. */
+  --color-ink-fixed: var(--ink-fixed);
+  --color-paper-fixed: var(--paper-fixed);
+  --color-paper-2-fixed: var(--paper-2-fixed);
+  --color-muted-brut-fixed: var(--muted-brut-fixed);
+  --color-band: var(--band);
+  --color-band-foreground: var(--band-foreground);
+  --shadow-brut-fixed: 4px 4px 0 0 var(--ink-fixed);
+  --shadow-brut-fixed-hover: 8px 8px 0 0 var(--ink-fixed);
+  --shadow-brut-fixed-press: 2px 2px 0 0 var(--ink-fixed);
 }
 
 :root {
@@ -68,6 +81,16 @@
   --accent-foreground: var(--ink);
   --accent-2: #FF5C8A;
   --muted-brut: #6B6B70;
+
+  /* Non-flipping versions of the brutalist anchors (see @theme inline above).
+     The contrast bands and accent surfaces are fixed islands — they read the
+     same in light and dark, so their fills/borders/shadows must not invert. */
+  --ink-fixed: #0E0E10;
+  --paper-fixed: #FAFAF5;
+  --paper-2-fixed: #F0EFE6;
+  --muted-brut-fixed: #6B6B70;
+  --band: #0E0E10;
+  --band-foreground: #FAFAF5;
 
   /* shadcn defaults — kept so admin Button + form still render correctly */
   --background: var(--paper);
@@ -108,6 +131,12 @@
   --paper-2: #1A1A1D;
   --muted-brut: #8A8A90;
 
+  /* The contrast band must NOT invert to white in dark mode (that produced a
+     glaring block). Lift it just above the page bg so it still reads as a
+     panel. ink-fixed / paper-fixed / paper-2-fixed / muted-brut-fixed are
+     deliberately left at their :root values — they never flip. */
+  --band: #1C1C20;
+
   --background: var(--paper);
   --foreground: var(--ink);
   --card: oklch(0.205 0 0);
@@ -137,6 +166,21 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Theme-swap motion budget (design-tokens.md §8): animate color/background
+   only, 100ms linear, no easing — and disable entirely under
+   prefers-reduced-motion. The pre-paint script sets the theme before first
+   paint, so this only fires on an actual toggle, never on load/navigation.
+   Element-level Tailwind transition utilities (buttons, cards) out-specify this
+   `*` rule and keep their own transform/shadow transitions. */
+@media (prefers-reduced-motion: no-preference) {
+  *,
+  *::before,
+  *::after {
+    transition: background-color 100ms linear, border-color 100ms linear,
+      color 100ms linear, fill 100ms linear;
+  }
 }
 
 @layer base {

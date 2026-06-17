@@ -68,17 +68,17 @@ export function ContactForm() {
     return (
       <div
         role="status"
-        className="flex flex-col items-start gap-4 border-2 border-ink bg-accent p-8 shadow-brut"
+        className="flex flex-col items-start gap-4 border-2 border-ink-fixed bg-accent p-8 shadow-brut-fixed"
       >
-        <CheckCircle2 strokeWidth={2.5} className="h-8 w-8 text-ink" />
-        <p className="font-display text-2xl font-bold text-ink">Message sent!</p>
-        <p className="font-body text-base text-ink/80">
+        <CheckCircle2 strokeWidth={2.5} className="h-8 w-8 text-ink-fixed" />
+        <p className="font-display text-2xl font-bold text-ink-fixed">Message sent!</p>
+        <p className="font-body text-base text-ink-fixed/80">
           Thanks for reaching out — I&apos;ll get back to you soon.
         </p>
         <button
           type="button"
           onClick={() => setSent(false)}
-          className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-ink underline underline-offset-4 hover:no-underline"
+          className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-ink-fixed underline underline-offset-4 hover:no-underline"
         >
           Send another message
         </button>
@@ -123,7 +123,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center justify-center gap-2 self-start border-2 border-ink bg-accent px-7 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex items-center justify-center gap-2 self-start border-2 border-ink-fixed bg-accent px-7 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink-fixed shadow-brut-fixed transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-fixed-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-fixed-press disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Sending…" : "Send message"}
         {!pending ? <ArrowRight strokeWidth={2.5} className="h-4 w-4" /> : null}

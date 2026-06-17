@@ -27,13 +27,13 @@ export async function SiteFooter() {
   }
 
   return (
-    <footer className="border-t-2 border-ink bg-accent text-ink">
+    <footer className="border-t-2 border-ink-fixed bg-accent text-ink-fixed">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between md:px-6">
         <div className="font-display">
           <p className="text-sm font-bold uppercase tracking-wider">
             © {YEAR} Anjan Vikas Reddy
           </p>
-          <p className="mt-1 font-body text-sm text-ink/70">
+          <p className="mt-1 font-body text-sm text-ink-fixed/70">
             Built deliberately. Hosted on Fly + Vercel.
           </p>
         </div>
@@ -52,7 +52,7 @@ export async function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={tile.name}
-                    className="inline-flex h-11 w-11 items-center justify-center border-2 border-ink bg-paper font-mono text-xs font-bold uppercase text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press"
+                    className="inline-flex h-11 w-11 items-center justify-center border-2 border-ink-fixed bg-paper-fixed font-mono text-xs font-bold uppercase text-ink-fixed shadow-brut-fixed transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-fixed-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-fixed-press"
                   >
                     {tile.label}
                   </Link>

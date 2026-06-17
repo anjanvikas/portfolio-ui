@@ -21,22 +21,22 @@ export function TestimonialsStrip({ items }: { items: Testimonial[] }) {
         return (
           <li
             key={t.id}
-            className="flex flex-col border-2 border-ink bg-paper-2 p-6 shadow-brut md:p-7"
+            className="flex flex-col border-2 border-ink-fixed bg-paper-2-fixed p-6 shadow-brut-fixed md:p-7"
           >
             <Quote
               aria-hidden
               strokeWidth={2.5}
               className="h-7 w-7 shrink-0 text-accent-2"
             />
-            <blockquote className="mt-4 flex-1 font-body text-lg leading-[1.6] text-ink">
+            <blockquote className="mt-4 flex-1 font-body text-lg leading-[1.6] text-ink-fixed">
               {t.quote}
             </blockquote>
-            <footer className="mt-5 border-t-2 border-ink pt-4">
-              <p className="font-display text-base font-bold text-ink">
+            <footer className="mt-5 border-t-2 border-ink-fixed pt-4">
+              <p className="font-display text-base font-bold text-ink-fixed">
                 {t.author_name}
               </p>
               {attr ? (
-                <p className="mt-0.5 font-mono text-xs font-bold uppercase tracking-[0.1em] text-muted-brut">
+                <p className="mt-0.5 font-mono text-xs font-bold uppercase tracking-[0.1em] text-muted-brut-fixed">
                   {attr}
                 </p>
               ) : null}

@@ -15,7 +15,7 @@ const TOOLS = [
 // deliberate contrast flip. Chips are bright paper slabs on the dark ground.
 export function ToolsReachFor() {
   return (
-    <section className="bg-ink">
+    <section className="bg-band">
       <div className="mx-auto max-w-6xl px-5 py-12 md:px-6 md:py-20">
         <p className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-accent">
           {"// Tools I reach for"}
@@ -24,7 +24,7 @@ export function ToolsReachFor() {
           {TOOLS.map((tool) => (
             <li
               key={tool}
-              className="flex items-center justify-center border-2 border-ink bg-paper px-4 py-3.5 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut md:min-w-[168px]"
+              className="flex items-center justify-center border-2 border-ink-fixed bg-paper-fixed px-4 py-3.5 font-display text-sm font-bold uppercase tracking-wider text-ink-fixed shadow-brut-fixed md:min-w-[168px]"
             >
               {tool}
             </li>

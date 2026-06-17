@@ -49,7 +49,7 @@ export default async function AboutPage() {
               href={`${browserAPIBase()}/api/v1/profile/resume`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center gap-2 border-2 border-ink bg-accent px-7 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press"
+              className="mt-6 inline-flex items-center justify-center gap-2 border-2 border-ink-fixed bg-accent px-7 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink-fixed shadow-brut-fixed transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-fixed-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-fixed-press"
             >
               Download CV
               <ArrowDown strokeWidth={2.5} className="h-4 w-4" />
@@ -68,12 +68,12 @@ export default async function AboutPage() {
 
       {/* Testimonials strip */}
       {testimonials.length > 0 ? (
-        <section className="bg-ink">
+        <section className="bg-band">
           <div className="mx-auto max-w-6xl px-5 py-14 md:px-6 md:py-20">
             <p className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-accent">
               — Testimonials
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-paper md:text-5xl">
+            <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-band-foreground md:text-5xl">
               What people say.
             </h2>
             <div className="mt-10">

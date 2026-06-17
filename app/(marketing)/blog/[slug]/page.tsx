@@ -154,11 +154,11 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
                 href={`/blog/${post.prev.slug}`}
                 className="group flex flex-col gap-1 border-2 border-ink bg-paper-2 p-5 transition-colors duration-100 hover:bg-accent-2"
               >
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-brut group-hover:text-ink">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-brut group-hover:text-ink-fixed">
                   <ArrowLeft strokeWidth={2.5} className="h-3.5 w-3.5" />
                   Part {post.prev.series_order}
                 </span>
-                <span className="font-display text-base font-bold leading-tight text-ink">
+                <span className="font-display text-base font-bold leading-tight text-ink group-hover:text-ink-fixed">
                   {post.prev.title}
                 </span>
               </Link>
@@ -170,11 +170,11 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
                 href={`/blog/${post.next.slug}`}
                 className="group flex flex-col items-end gap-1 border-2 border-ink bg-paper-2 p-5 text-right transition-colors duration-100 hover:bg-accent-2"
               >
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-brut group-hover:text-ink">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-brut group-hover:text-ink-fixed">
                   Part {post.next.series_order}
                   <ArrowRight strokeWidth={2.5} className="h-3.5 w-3.5" />
                 </span>
-                <span className="font-display text-base font-bold leading-tight text-ink">
+                <span className="font-display text-base font-bold leading-tight text-ink group-hover:text-ink-fixed">
                   {post.next.title}
                 </span>
               </Link>

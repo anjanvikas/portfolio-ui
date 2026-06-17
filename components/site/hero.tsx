@@ -40,7 +40,7 @@ export function Hero({ profile }: { profile: Profile }) {
                 href={cvHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 border-2 border-ink bg-accent px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press md:px-7"
+                className="inline-flex items-center justify-center gap-2 border-2 border-ink-fixed bg-accent px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink-fixed shadow-brut-fixed transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brut-fixed-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-fixed-press md:px-7"
               >
                 Download CV
                 <ArrowDown strokeWidth={2.5} className="h-4 w-4" />
@@ -66,7 +66,7 @@ function HeroSocialButtons({ links }: { links: SocialLink[] }) {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center border-2 border-ink bg-paper px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow,background-color] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-accent hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press md:px-7"
+            className="inline-flex items-center justify-center border-2 border-ink bg-paper px-6 py-3 font-display text-sm font-bold uppercase tracking-wider text-ink shadow-brut transition-[transform,box-shadow,background-color] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-accent hover:text-ink-fixed hover:shadow-brut-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-brut-press md:px-7"
           >
             {key}
           </Link>

@@ -49,7 +49,7 @@ export function PostToc({ headings }: { headings: Heading[] }) {
                 href={`#${h.id}`}
                 className={`block px-2 py-1 font-body text-sm leading-snug transition-colors ${
                   active
-                    ? "bg-accent font-semibold text-ink"
+                    ? "bg-accent font-semibold text-ink-fixed"
                     : "text-muted-brut hover:text-ink"
                 }`}
               >

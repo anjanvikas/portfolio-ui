@@ -31,7 +31,7 @@ export default async function ContactPage() {
               Prefer email? Reach me at{" "}
               <a
                 href={`mailto:${profile.email}`}
-                className="font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4 hover:bg-accent"
+                className="font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4 hover:bg-accent hover:text-ink-fixed"
               >
                 {profile.email}
               </a>
